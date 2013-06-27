@@ -40,11 +40,11 @@ import android.net.Uri;
 import android.os.RemoteException;
 
 public abstract class VContentProvider extends ContentProvider {
-	private VSQLiteOpenHelper mOpenHelper;
-	private SQLiteDatabase db;
-	private static HashMap<String, ArrayList<String>> tableMap = new HashMap<String, ArrayList<String>>();
-	private static HashMap<String, ArrayList<String>> viewTablesMap = new HashMap<String, ArrayList<String>>();
-	private HashSet<Uri> batchingUris;
+	protected VSQLiteOpenHelper mOpenHelper;
+	protected SQLiteDatabase db;
+	protected static HashMap<String, ArrayList<String>> tableMap = new HashMap<String, ArrayList<String>>();
+	protected static HashMap<String, ArrayList<String>> viewTablesMap = new HashMap<String, ArrayList<String>>();
+	protected HashSet<Uri> batchingUris;
 
 	/**
 	 * @param dbVersions
@@ -315,7 +315,7 @@ public abstract class VContentProvider extends ContentProvider {
 		return results;
 	}
 
-	private static String getTableName(Uri uri) {
+	protected static String getTableName(Uri uri) {
 		List<String> paths = uri.getPathSegments();
 		if (paths == null || paths.size() == 0)
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -328,7 +328,7 @@ public abstract class VContentProvider extends ContentProvider {
 		}
 	}
 
-	private String getIdPath(Uri uri) {
+	protected String getIdPath(Uri uri) {
 		List<String> paths = uri.getPathSegments();
 		if (paths.size() == 1) {
 			return null;
@@ -345,7 +345,7 @@ public abstract class VContentProvider extends ContentProvider {
 		}
 	}
 
-	private String finalSelection(String idPath, String selection) {
+	protected String finalSelection(String idPath, String selection) {
 		if (idPath == null)
 			return selection;
 		String pathWhere = "_id = " + idPath;
@@ -356,7 +356,7 @@ public abstract class VContentProvider extends ContentProvider {
 		}
 	}
 
-	private void notifyChange(Uri uri, int count) {
+	protected void notifyChange(Uri uri, int count) {
 		if (!batchingUris.contains(uri) && count != 0) {
 			getContext().getContentResolver().notifyChange(uri, null);
 
